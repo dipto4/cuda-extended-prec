@@ -118,7 +118,7 @@ class df64 {
 
     // mathematical operators begin here
 
-    __host__ __device__ df64 operator+(const df64 a) {
+    __host__ __device__ df64 operator+(df64 const& a) {
         // NOTE: the following version works but doesn't use vectorization
         // that is why this is not being used. Set the flags to use this
 #ifdef NO_USE_VECTORSUM
@@ -145,7 +145,7 @@ class df64 {
 
     }
 
-    __host__ __device__ df64 operator*(const df64 a) {
+    __host__ __device__ df64 operator*(df64 const& a) {
         float2 p;
 #ifdef NO_USE_VECTORMULT
         p = _twoProd(this->val.x, a.val.x);
@@ -161,7 +161,7 @@ class df64 {
 
 
     // note this represents division BY a
-    __host__ __device__ df64 operator/(const df64 a) {
+    __host__ __device__ df64 operator/(df64 const& a) {
         // use the Karp method for division
         
         float xn = 1.0f/a.val.x;
@@ -176,20 +176,20 @@ class df64 {
 
 
     }
-/*    
+    
     // some comparsion operators
 
-    __host__ __device__ bool operator==(const df64 a) {
-
+    __host__ __device__ bool operator==(df64 const& a) {
+        return (this->val.x == a.x) && (this->val.y == a.y);
     }
     
-    __host__ __device__ bool operator!=(const df64 a) {
-
+    __host__ __device__ bool operator!=(df64 const& a) {
+        return (this->val.x != a.x) || (this->val.y != a.y);
     }
 
-    __host__ __device__ bool operator<=(const df64 a) {
-
+    __host__ __device__ bool operator<=(df64 const& a) {
+        return (this->val.x < a.x || (this->val.x == a.x && this->val.y < a.y));
     }
-*/
+
     // some relevant mathematical tools
 };
