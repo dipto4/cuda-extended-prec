@@ -145,6 +145,20 @@ class df64 {
 
     }
 
+    __host__ __device__ df64 operator+(float const& a) {
+        df64 s = *this + df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+    __host__ __device__ df64 operator+(double const& a) {
+        df64 s = *this + df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+
+
     __host__ __device__ df64 operator*(df64 const& a) {
         float2 p;
 #ifdef NO_USE_VECTORMULT
@@ -158,6 +172,21 @@ class df64 {
         this->val = p;
         return *this;
     }
+
+    __host__ __device__ df64 operator*(float const& a) {
+        df64 s = *this * df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+    __host__ __device__ df64 operator*(double const& a) {
+        df64 s = *this * df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+
+
 
 
     // note this represents division BY a
@@ -176,20 +205,44 @@ class df64 {
 
 
     }
-    
+
+    __host__ __device__ df64 operator/(float const& a) {
+        df64 s = *this / df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+    __host__ __device__ df64 operator/(double const& a) {
+        df64 s = *this / df64(a);
+        this->val = s.val;
+        return *this;
+    }
+
+
+
+
+
     // some comparsion operators
 
     __host__ __device__ bool operator==(df64 const& a) {
-        return (this->val.x == a.x) && (this->val.y == a.y);
+        return (this->val.x == a.val.x) && (this->val.y == a.val.y);
     }
     
     __host__ __device__ bool operator!=(df64 const& a) {
-        return (this->val.x != a.x) || (this->val.y != a.y);
+        return (this->val.x != a.val.x) || (this->val.y != a.val.y);
     }
 
     __host__ __device__ bool operator<=(df64 const& a) {
-        return (this->val.x < a.x || (this->val.x == a.x && this->val.y < a.y));
+        return (this->val.x < a.val.x || (this->val.x == a.val.x && this->val.y < a.val.y));
+    }
+    
+    //hi
+    __host__ __device__ float get_x() {
+        return this->val.x;
+    }
+    //lo
+    __host__ __device__ float get_y() {
+        return this->val.y;
     }
 
-    // some relevant mathematical tools
 };
