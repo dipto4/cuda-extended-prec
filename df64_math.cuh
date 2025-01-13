@@ -8,20 +8,19 @@
 __host__ __device__ df64 sqrt(const df64 &a) {
     float xn = rsqrtf(a.val.x);
     float yn = a.val.x * xn;
-    df64 ynsqr = yn;
-    ynsqr = yn * yn;
-    float diff = (a + -ynsqr).val.x;
-    float2 prod = _twoProd(xn, diff);
-    prod.x = prod.x / 2;
-    prod.y = prod.y / 2;
-    df64 sum = df64(yn) + df64(prod);
+    df64 ynsqr = df64(df64::_twoProdComp(yn , yn));
+
+    df64 diff_ = -ynsqr + a;
+    float diff = diff_.val.x;
+    df64 prod = df64(df64::_twoProdComp(xn / 2.0, diff));
+    df64 sum = df64(yn) + prod;
     return sum;
 }
 
 
 
-__host__ __device__ inline df64 exp(const df64& a) {
-    const float thresh = 1.0e-20 * exp(a->get_x());
+__host__ __device__  df64 exp(const df64& a) {
+    const float thresh = 1.0e-20 * expf(a.val.x);
     df64 t, p , f, s, x;
     float m;
 
@@ -31,7 +30,7 @@ __host__ __device__ inline df64 exp(const df64& a) {
     f = df64(2.0f);
     t = p / df64(2.0f);
 
-    while(abs(t->get_x()) > thresh) {
+    while(abs(t.val.x) > thresh) {
         s = s + t;
         p = p * a;
         m += 1.0f;
@@ -43,7 +42,7 @@ __host__ __device__ inline df64 exp(const df64& a) {
 }
 
 
-__host__ __device__ inline df64 log(const df64& a) {
+__host__ __device__ df64 log(const df64& a) {
     df64 xi;
 
     if(!(a == 1.0f)) {
@@ -57,7 +56,7 @@ __host__ __device__ inline df64 log(const df64& a) {
     return xi;
 }
  
-__host__ __device__ inline df64 sin(const df64& a) {
+__host__ __device__ df64 sin(const df64& a) {
     const float thresh = 1.0e-20 * abs(a->get(x));
     df64 t, p , f , s, x;
     float m;
@@ -76,7 +75,7 @@ __host__ __device__ inline df64 sin(const df64& a) {
         while(true) {
             p = p * x;
             m += 2.0f;
-            f = f * ds64(m*(m-1));
+            f = f * df64(m*(m-1));
             t = p / f;
             s = s + t;
             if(abs(t->get_x()) < thresh) {
@@ -89,7 +88,7 @@ __host__ __device__ inline df64 sin(const df64& a) {
     return sin_a;
 }
 
-__host__ __device__ inline df64 cos(const df64& a) {
+__host__ __device__ df64 cos(const df64& a) {
     const float thresh = 1.0e-20 * abs(a->get(x));
     df64 t, p , f , s, x;
     float m;
@@ -108,7 +107,7 @@ __host__ __device__ inline df64 cos(const df64& a) {
         while(true) {
             p = p * x;
             m += 2.0f;
-            f = f * ds64(m*(m-1));
+            f = f * df64(m*(m-1));
             t = p / f;
             s = s + t;
             if(abs(t->get_x()) < thresh) {

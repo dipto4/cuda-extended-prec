@@ -11,13 +11,13 @@ constexpr float SPLITTERMULT = (1 << 12) + 1;
 class df64 {
     float2 val;
 
-    __host__ __device__ float2 _quickTwoSum(float a, float b) {
+    __host__ __device__ static float2 _quickTwoSum(float a, float b) {
         float s = a + b;
         float e = b - (s - a);
         return make_float2(s, e);
     }
 
-    __host__ __device__ float2 _twoSum(float a, float b) {
+    __host__ __device__ static float2 _twoSum(float a, float b) {
         float s = a + b;
         float v = s - a;
         float e = (a - (s - v)) + (b-v);
@@ -25,7 +25,7 @@ class df64 {
     }
     
 
-    __host__ __device__ float2 _split(double a) {
+    __host__ __device__ static float2 _split(double a) {
         double t = a * SPLITTER;
         double t_hi = t - (t - a);
         double t_lo = a - t_hi;
@@ -33,21 +33,21 @@ class df64 {
         return make_float2(t_hi, t_lo);
     }
 
-    __host__ __device__ float4 _twoSumComp(float2 a , float2 b) {
+    __host__ __device__ static float4 _twoSumComp(float2 a , float2 b) {
         float2 s = make_float2(a.x + b.x, a.y + b.y);
         float2 v = make_float2(s.x - a.x, s.y-a.y);
         float2 e = make_float2((a.x - (s.x-v.x)) + (b.x-v.x), (a.y - (s.y-v.y)) + (b.y-v.y));
         return make_float4(s.x, e.x, s.y, e.y);
     }
 
-    __host__ __device__ float2 _splitMult(float a) {
+    __host__ __device__ static float2 _splitMult(float a) {
         float t = a * SPLITTERMULT;
         float a_hi = t - (t - a);
         float a_lo = a - a_hi;
         return make_float2(a_hi, a_lo);
     }
 
-    __host__ __device__ float4 _splitMultComp(float2 a) {
+    __host__ __device__ static float4 _splitMultComp(float2 a) {
         float2 t = make_float2(a.x * SPLITTERMULT, a.y * SPLITTERMULT);
 
         float2 a_hi = make_float2(t.x - (t.x - a.x), t.y - (t.y - a.y));
@@ -55,7 +55,7 @@ class df64 {
         return make_float4(a_hi.x, a_lo.x, a_hi.y, a_lo.y);
     }
 
-    __host__ __device__ float2 _twoProd(float a, float b) {
+    __host__ __device__ static float2 _twoProd(float a, float b) {
         float p = a * b;
         float2 aS = _splitMult(a);
         float2 bS = _splitMult(b);
@@ -63,7 +63,7 @@ class df64 {
         return make_float2(p , err);
     }
     
-    __host__ __device__ float2 _twoProdComp(float a, float b) {
+    __host__ __device__ static float2 _twoProdComp(float a, float b) {
         float p = a * b;
         float4 abS = _splitMultComp(make_float2(a,b));
         //abS.x = aS.x , abS.y = aS.y , abS.z = bS.x, abS.w = bS.y
@@ -242,5 +242,11 @@ class df64 {
     __host__ __device__ float get_y() {
         return this->val.y;
     }
+    
+    __host__ __device__ friend df64 sqrt(const df64 &a);
+    __host__ __device__ friend df64 exp(const df64 &a);
+    __host__ __device__ friend df64 log(const df64 &a);
+    __host__ __device__ friend df64 sin(const df64 &a);
+    __host__ __device__ friend df64 cos(const df64 &a);
 
 };
