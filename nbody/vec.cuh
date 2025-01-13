@@ -15,6 +15,15 @@ struct vec3 {
     __device__ __host__ vec3 operator+(vec3 const& v) const {
         return vec3(v.x+x, v.y+y, v.z+z);
     }
+    
+    __device__ __host__ T operator*(vec3 const& v) const {
+        return v.x * x + v.y * y + v.z * z;
+    }
+
+    __device__ __host__ vec3 operator(T const& v) const {
+        return vec3(x * v , y * v , z * v);
+    }
+    
 
     __device__ __host__ vec3 operator-() const {
         return vec3(-x,-y,-z);
