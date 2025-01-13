@@ -117,8 +117,8 @@ class df64 {
     }
 
     // mathematical operators begin here
-
-    __host__ __device__ df64 operator+(df64 const& a) {
+    
+    __host__ __device__ df64 operator+(df64 const& a) const {
         // NOTE: the following version works but doesn't use vectorization
         // that is why this is not being used. Set the flags to use this
         df64 res;
@@ -146,19 +146,19 @@ class df64 {
 
     }
 
-    __host__ __device__ df64 operator+(float const& a) {
+    __host__ __device__ df64 operator+(float const& a) const {
         df64 s = *this + df64(a);
         return s;
     }
 
-    __host__ __device__ df64 operator+(double const& a) {
+    __host__ __device__ df64 operator+(double const& a) const {
         df64 s = *this + df64(a);
         return s;
     }
 
 
 
-    __host__ __device__ df64 operator*(df64 const& a) {
+    __host__ __device__ df64 operator*(df64 const& a) const {
         float2 p;
         df64 res;
 #ifdef NO_USE_VECTORMULT
@@ -172,13 +172,14 @@ class df64 {
         res.val = p;
         return res;
     }
+    
 
-    __host__ __device__ df64 operator*(float const& a) {
+    __host__ __device__ df64 operator*(float const& a) const {
         df64 s = *this * df64(a);
         return s;
     }
 
-    __host__ __device__ df64 operator*(double const& a) {
+    __host__ __device__ df64 operator*(double const& a) const{
         df64 s = *this * df64(a);
         return s;
     }
@@ -188,7 +189,7 @@ class df64 {
 
 
     // note this represents division BY a
-    __host__ __device__ df64 operator/(df64 const& a) {
+    __host__ __device__ df64 operator/(df64 const& a) const {
         // use the Karp method for division
         df64 res;
         float xn = 1.0f/a.val.x;
@@ -204,13 +205,13 @@ class df64 {
 
     }
 
-    __host__ __device__ df64 operator/(float const& a) {
+    __host__ __device__ df64 operator/(float const& a) const {
         df64 s = *this / df64(a);
         //this->val = s.val;
         return s;
     }
 
-    __host__ __device__ df64 operator/(double const& a) {
+    __host__ __device__ df64 operator/(double const& a) const {
         df64 s = *this / df64(a);
         //this->val = s.val;
         return s;
@@ -222,15 +223,15 @@ class df64 {
 
     // some comparsion operators
 
-    __host__ __device__ bool operator==(df64 const& a) {
+    __host__ __device__ bool operator==(df64 const& a) const {
         return (this->val.x == a.val.x) && (this->val.y == a.val.y);
     }
     
-    __host__ __device__ bool operator!=(df64 const& a) {
+    __host__ __device__ bool operator!=(df64 const& a) const {
         return (this->val.x != a.val.x) || (this->val.y != a.val.y);
     }
 
-    __host__ __device__ bool operator<=(df64 const& a) {
+    __host__ __device__ bool operator<=(df64 const& a) const {
         return (this->val.x < a.val.x || (this->val.x == a.val.x && this->val.y < a.val.y));
     }
     

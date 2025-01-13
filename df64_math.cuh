@@ -24,7 +24,7 @@ __host__ __device__  df64 exp(const df64& a) {
     df64 t, p , f, s, x;
     float m;
 
-    s = a + df64(1.0f);
+    s = df64(1.0) + a;
     p = a * a;
     m = 2.0f;
     f = df64(2.0f);
@@ -45,11 +45,11 @@ __host__ __device__  df64 exp(const df64& a) {
 __host__ __device__ df64 log(const df64& a) {
     df64 xi;
 
-    if(!(a == 1.0f)) {
-        if(a.get_x() <= 0.0) {
+    if(!(a == df64(1.0f))) {
+        if(a.val.x <= 0.0) {
             xi  = make_float2(NAN, NAN);
         } else {
-            xi.x = logf(a.get_x());
+            xi.val.x = logf(a.val.x);
             xi  = (xi + (exp(-xi) * a)) + df64(-1.0);  
         }
     }
@@ -57,13 +57,13 @@ __host__ __device__ df64 log(const df64& a) {
 }
  
 __host__ __device__ df64 sin(const df64& a) {
-    const float thresh = 1.0e-20 * abs(a->get(x));
+    const float thresh = 1.0e-20 * abs(a.val.x);
     df64 t, p , f , s, x;
     float m;
 
     df64 sin_a;
 
-    if(a->get_x() == 0.0f) {
+    if(a.val.x == 0.0f) {
         sin_a =  df64(make_float2(ZERO,ZERO));
     } else {
         x = - (a * a);
@@ -78,7 +78,7 @@ __host__ __device__ df64 sin(const df64& a) {
             f = f * df64(m*(m-1));
             t = p / f;
             s = s + t;
-            if(abs(t->get_x()) < thresh) {
+            if(abs(t.val.x) < thresh) {
                 break;
             }
         }
@@ -89,13 +89,13 @@ __host__ __device__ df64 sin(const df64& a) {
 }
 
 __host__ __device__ df64 cos(const df64& a) {
-    const float thresh = 1.0e-20 * abs(a->get(x));
+    const float thresh = 1.0e-20 * abs(a.val.x);
     df64 t, p , f , s, x;
     float m;
 
     df64 cos_a;
 
-    if(a->get_x() == 0.0f) {
+    if(a.val.x == 0.0f) {
         cos_a =  df64(make_float2(ONE,ZERO));
     } else {
         x = - (a * a);
@@ -110,7 +110,7 @@ __host__ __device__ df64 cos(const df64& a) {
             f = f * df64(m*(m-1));
             t = p / f;
             s = s + t;
-            if(abs(t->get_x()) < thresh) {
+            if(abs(t.val.x) < thresh) {
                 break;
             }
         }
