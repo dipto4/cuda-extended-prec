@@ -121,6 +121,7 @@ class df64 {
     __host__ __device__ df64 operator+(df64 const& a) {
         // NOTE: the following version works but doesn't use vectorization
         // that is why this is not being used. Set the flags to use this
+        df64 res;
 #ifdef NO_USE_VECTORSUM
         float2 s, t;
         s = _twoSum(this->val.x, a.val.x);
@@ -129,8 +130,8 @@ class df64 {
         s = _quickTwoSum(s.x, s.y);
         s.y += t.y;
         s = _quickTwoSum(s.x,s.y);
-        val = s;
-        return *this;
+        res.val = s;
+        return res;
 #else
         float4 st;
         float2 xy;
@@ -139,28 +140,27 @@ class df64 {
         xy = _quickTwoSum(st.x,st.y);
         st.y += st.w;
         xy = _quickTwoSum(st.x,st.y);
-        val = xy;
-        return *this;
+        res.val = xy;
+        return res;
 #endif
 
     }
 
     __host__ __device__ df64 operator+(float const& a) {
         df64 s = *this + df64(a);
-        this->val = s.val;
-        return *this;
+        return s;
     }
 
     __host__ __device__ df64 operator+(double const& a) {
         df64 s = *this + df64(a);
-        this->val = s.val;
-        return *this;
+        return s;
     }
 
 
 
     __host__ __device__ df64 operator*(df64 const& a) {
         float2 p;
+        df64 res;
 #ifdef NO_USE_VECTORMULT
         p = _twoProd(this->val.x, a.val.x);
 #else
@@ -169,20 +169,18 @@ class df64 {
         p.y += this->val.x * a.val.y;
         p.y += this->val.y * a.val.x;
         p = _quickTwoSum(p.x, p.y);
-        this->val = p;
-        return *this;
+        res.val = p;
+        return res;
     }
 
     __host__ __device__ df64 operator*(float const& a) {
         df64 s = *this * df64(a);
-        this->val = s.val;
-        return *this;
+        return s;
     }
 
     __host__ __device__ df64 operator*(double const& a) {
         df64 s = *this * df64(a);
-        this->val = s.val;
-        return *this;
+        return s;
     }
 
 
@@ -192,7 +190,7 @@ class df64 {
     // note this represents division BY a
     __host__ __device__ df64 operator/(df64 const& a) {
         // use the Karp method for division
-        
+        df64 res;
         float xn = 1.0f/a.val.x;
         float yn = this->val.x * xn;
         df64 prod0 = df64(yn);
@@ -200,22 +198,22 @@ class df64 {
         float diff = (*this +  -prod0).val.x;
         float2 prod = _twoProd(xn, diff);
         df64 sum = df64(prod) + df64(yn);
-        this->val = sum.val;
-        return *this;
+        res.val = sum.val;
+        return res;
 
 
     }
 
     __host__ __device__ df64 operator/(float const& a) {
         df64 s = *this / df64(a);
-        this->val = s.val;
-        return *this;
+        //this->val = s.val;
+        return s;
     }
 
     __host__ __device__ df64 operator/(double const& a) {
         df64 s = *this / df64(a);
-        this->val = s.val;
-        return *this;
+        //this->val = s.val;
+        return s;
     }
 
 
